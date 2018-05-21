@@ -89,7 +89,7 @@ function movieThis(){
 }
 
 function doIt() {
-	fs.readFile("random.txt", "utf8", function(error, data){
+	fs.readFile("random.txt", "UTF8", function(error, data){
 
 		var dataArray = data.split(",");
 		// console.log(dataArray);
@@ -102,9 +102,7 @@ function doIt() {
 				mySpotify();
 				break;
 		}
-
-
-	})
+	});
 }
 
 
