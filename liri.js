@@ -6,7 +6,7 @@ var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
 var keys = require("./keys.js");
 
-var userInput=process.argv[2];
+var userCommand=process.argv[2];
 var parameter=process.argv[3];
 
 var spotify = new Spotify(keys.spotify);
@@ -15,13 +15,21 @@ var client = new Twitter(keys.twitter);
 order();
 
 function order() {
-    switch (userInput){
+    switch (userCommand){
         case "my-tweets":
             myTweets();
             break;
 
         case "spotify-this-song":
 			mySpotify();
+			break;
+
+		case "movie-this":
+			movieThis();
+			break;
+
+		case "do-what-it-says":
+			doIt();
 			break;
     }
 }
@@ -39,6 +47,10 @@ function myTweets(){
 
 
 function mySpotify(){
+	if (parameter === ""){
+		parameter ="The sign by ace of base"
+	}
+
  spotify.search({ type: 'track', query: parameter }, function(err, data) {
   if (err) {
     return console.log('Error occurred: ' + err);
@@ -51,6 +63,49 @@ function mySpotify(){
 	});
 }
 
+function movieThis(){
+	if (parameter === ""){
+		parameter = "Mr. Nobody";
+	}
+
+	var queryURL ="http://www.omdbapi.com/?apikey=trilogy&t=" + parameter + "&y=&plot=full&tomatoes=true&r=json";
+
+	request(queryURL, function(error, response, body){
+		if (error){
+			console.log(error)
+		}
+		// console.log(body);
+
+		console.log("Title: " + JSON.parse(body).Title);
+		console.log("Year of release: " + JSON.parse(body).Year);
+		console.log("IMBD Rating: " + JSON.parse(body).imdbRating);
+		console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoUserRating);
+		console.log("Country where movie was produced: " + JSON.parse(body).Country);
+		console.log("Language: " + JSON.parse(body).Language);
+		console.log("Plot: " + JSON.parse(body).Plot);
+		console.log("Actors: " + JSON.parse(body).Actors);
+	});
+
+}
+
+function doIt() {
+	fs.readFile("random.txt", "utf8", function(error, data){
+
+		var dataArray = data.split(",");
+		// console.log(dataArray);
+
+		var command=dataArray[0]
+		parameter =dataArray[1]
+
+		switch (command){	
+			case "spotify-this-song":
+				mySpotify();
+				break;
+		}
+
+
+	})
+}
 
 
 
